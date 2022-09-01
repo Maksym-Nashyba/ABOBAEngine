@@ -12,4 +12,10 @@
       <PackageReference Include="SixLabors.ImageSharp" Version="2.1.3" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Content Include="bin\Debug\net6.0\perfection.png" />
+      <Content Include="bin\Debug\net6.0\shader.frag" />
+      <Content Include="bin\Debug\net6.0\shader.vert" />
+    </ItemGroup>
+
 </Project>
