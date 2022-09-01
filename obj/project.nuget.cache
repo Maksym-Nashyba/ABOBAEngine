@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "+i590gFq0OWavvViOoKMF3JuJeagP7Dc5ShrShP1tIxn/o1cGKJQLzY+Dzv2Vmcqfy8bd0yuC1Cmj+2skFQc3A==",
+  "dgSpecHash": "5V8e6LpZaQxrmp9sCkpD2lSHSy5yvv8W3RRHx46jZDIHiRf9ZJxnfxuUInYKgJKFrEzuBIZmdiBRY+bwtI8khA==",
   "success": true,
-  "projectFilePath": "C:\\Users\\maksy\\OneDrive\\Робочий стіл\\ABOBAEngine\\ABOBAEngine.csproj",
+  "projectFilePath": "D:\\Projects\\ABOBAEngine\\ABOBAEngine.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\maksy\\.nuget\\packages\\microsoft.netcore.platforms\\5.0.0\\microsoft.netcore.platforms.5.0.0.nupkg.sha512",
     "C:\\Users\\maksy\\.nuget\\packages\\opentk\\4.7.4\\opentk.4.7.4.nupkg.sha512",

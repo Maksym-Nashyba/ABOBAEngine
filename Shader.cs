@@ -1,17 +1,17 @@
 ﻿using System.Text;
 using OpenTK.Graphics.ES20;
+using OpenTK.Mathematics;
 
 namespace ABOBAEngine;
 
 public class Shader : IDisposable
 {
-    private int _handle;
+    private readonly int _handle;
 
     public Shader(string vertexPath, string fragmentPath)
     { 
         int vertexShader;
         int fragmentShader;
-        int program;
         string vertexShaderSource;
         string fragmentShaderSource;
 
@@ -73,6 +73,20 @@ public class Shader : IDisposable
         GL.UseProgram(_handle);
     }
     
+    public void SetUniformFloat(string name, ref float value)
+    {
+        int location = GL.GetUniformLocation(_handle, name);
+        GL.Uniform1(location, value);
+    }
+    
+    public void SetUniformMatrix4(string name, ref Matrix4 value)
+    {
+        int location = GL.GetUniformLocation(_handle, name);
+        GL.UniformMatrix4(location, true, ref value);
+    }
+
+    #region Disposing
+
     private bool disposedValue = false;
 
     protected virtual void Dispose(bool disposing)
@@ -96,4 +110,6 @@ public class Shader : IDisposable
         Dispose(true);
         GC.SuppressFinalize(this);
     }
+
+    #endregion
 }

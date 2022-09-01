@@ -10,7 +10,7 @@ public class ApplicationWindow : GameWindow
 {
     private Texture _texture;
     private Shader _shader;
-    float[] _vertices =
+    private float[] _vertices =
     {
         //Position          Texture coordinates
         0.5f,  0.5f, 0.0f, 1.0f, 1.0f,  // top right
@@ -51,7 +51,7 @@ public class ApplicationWindow : GameWindow
 
         _shader = new Shader("shader.vert", "shader.frag");
         _shader.Use();
-        
+
         GL.VertexAttribPointer(0, 3, VertexAttribPointerType.Float, false, 5 * sizeof(float), 0);
         GL.EnableVertexAttribArray(0); //Binding vertex position to first shader parameter
         
@@ -80,6 +80,17 @@ public class ApplicationWindow : GameWindow
         GL.BindVertexArray(_vertexArrayObject);
         _texture.Use(TextureUnit.Texture0);
         _shader.Use();
+
+        double time = DateTime.Now.Millisecond / 1000d;
+        time = time * 2d - 1d;
+        time = Math.Sin(time * Math.PI);
+        Matrix4 transform = Matrix4.Identity;
+        Matrix4 model = Matrix4.CreateRotationX(MathHelper.DegreesToRadians(45f * (float)time));
+        Matrix4 view = Matrix4.CreateTranslation(0f, 0f, -3f);
+        Matrix4 projection = Matrix4.CreatePerspectiveFieldOfView(MathHelper.DegreesToRadians(45.0f), 800f / 600f, 0.1f, 100.0f);
+        transform = transform * model * view * projection;
+        _shader.SetUniformMatrix4("transform", ref transform);
+        
         GL.DrawElements(PrimitiveType.Triangles, _indices.Length, DrawElementsType.UnsignedInt, 0);
         
         Context.SwapBuffers();
