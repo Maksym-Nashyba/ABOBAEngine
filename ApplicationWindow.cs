@@ -10,24 +10,53 @@ public class ApplicationWindow : GameWindow
 {
     private Texture _texture;
     private Shader _shader;
-    private float[] _vertices =
-    {
-        //Position          Texture coordinates
-        0.5f,  0.5f, 0.0f, 1.0f, 1.0f,  // top right
-        0.5f, -0.5f, 0.0f, 1.0f, 0.0f, // bottom right
-        -0.5f, -0.5f, 0.0f, 0.0f, 0.0f,  // bottom left
-        -0.5f,  0.5f, 0.0f, 0.0f, 1.0f  // top left
-    };
-    
-    uint[] _indices = {  // note that we start from 0!
-        0, 1, 3,        // first triangle
-        1, 2, 3        // second triangle
+    private float[] _vertices = {
+        -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
+        0.5f, -0.5f, -0.5f,  1.0f, 0.0f,
+        0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+        0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+        -0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
+        -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
+
+        -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+        0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
+        0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
+        0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
+        -0.5f,  0.5f,  0.5f,  0.0f, 1.0f,
+        -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+
+        -0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+        -0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+        -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+        -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+        -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+        -0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+
+        0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+        0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+        0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+        0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+        0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+        0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+
+        -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+        0.5f, -0.5f, -0.5f,  1.0f, 1.0f,
+        0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
+        0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
+        -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+        -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+
+        -0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
+        0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+        0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+        0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+        -0.5f,  0.5f,  0.5f,  0.0f, 0.0f,
+        -0.5f,  0.5f, -0.5f,  0.0f, 1.0f
     };
 
     private int _vertexBufferObject;
     private int _vertexArrayObject;
-    private int _elementBufferObject;
-    
+
     public ApplicationWindow(int width, int height, string title) : base(GameWindowSettings.Default, NativeWindowSettings.Default)
     {
         Size = new Vector2i(width, height);
@@ -36,18 +65,15 @@ public class ApplicationWindow : GameWindow
 
     protected override void OnLoad()
     {
+        GL.Enable(EnableCap.DepthTest);
         GL.ClearColor(0.2f, 0.3f, 0.3f, 1.0f);
         _vertexBufferObject = GL.GenBuffer();
         _vertexArrayObject = GL.GenVertexArray();
-        _elementBufferObject = GL.GenBuffer();
-        
+
         GL.BindVertexArray(_vertexArrayObject);
         
         GL.BindBuffer(BufferTarget.ArrayBuffer, _vertexBufferObject);
         GL.BufferData(BufferTarget.ArrayBuffer, _vertices.Length * sizeof(float), _vertices, BufferUsageHint.StaticDraw);
-        
-        GL.BindBuffer(BufferTarget.ElementArrayBuffer, _elementBufferObject);
-        GL.BufferData(BufferTarget.ElementArrayBuffer, _indices.Length * sizeof(uint), _indices, BufferUsageHint.StaticDraw);
 
         _shader = new Shader("shader.vert", "shader.frag");
         _shader.Use();
@@ -75,24 +101,24 @@ public class ApplicationWindow : GameWindow
     
     protected override void OnRenderFrame(FrameEventArgs e)
     {
-        GL.Clear(ClearBufferMask.ColorBufferBit);
+        GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
         
         GL.BindVertexArray(_vertexArrayObject);
         _texture.Use(TextureUnit.Texture0);
         _shader.Use();
 
-        double time = DateTime.Now.Millisecond / 1000d;
+        double time = DateTime.Now.Millisecond / 1000d * 180d;
         time = time * 2d - 1d;
-        time = Math.Sin(time * Math.PI);
         Matrix4 transform = Matrix4.Identity;
-        Matrix4 model = Matrix4.CreateRotationX(MathHelper.DegreesToRadians(45f * (float)time));
+        Matrix4 model = Matrix4.CreateRotationY((float)MathHelper.DegreesToRadians(time))
+            * Matrix4.CreateRotationX((float)MathHelper.DegreesToRadians(time));
         Matrix4 view = Matrix4.CreateTranslation(0f, 0f, -3f);
         Matrix4 projection = Matrix4.CreatePerspectiveFieldOfView(MathHelper.DegreesToRadians(45.0f), 800f / 600f, 0.1f, 100.0f);
         transform = transform * model * view * projection;
         _shader.SetUniformMatrix4("transform", ref transform);
         
-        GL.DrawElements(PrimitiveType.Triangles, _indices.Length, DrawElementsType.UnsignedInt, 0);
-        
+        GL.DrawArrays(PrimitiveType.Triangles, 0, 36);
+
         Context.SwapBuffers();
         base.OnRenderFrame(e);
     }
