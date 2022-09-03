@@ -9,7 +9,7 @@ public abstract class Material
         _shader = shader;
     }
 
-    public virtual void SetUp()
+    public virtual void Use()
     {
         _shader.Use();
     }

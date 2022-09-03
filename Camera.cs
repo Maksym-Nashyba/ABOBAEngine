@@ -18,6 +18,6 @@ public class Camera
     public Matrix4 GetViewMatrix()
     {
         return Matrix4.CreateFromQuaternion(Rotation) 
-            * Matrix4.CreateTranslation(-Position);
+            * Matrix4.CreateTranslation(Position);
     }
 }
