@@ -84,6 +84,7 @@ public class ApplicationWindow : GameWindow
         GL.VertexAttribPointer(1, 2, VertexAttribPointerType.Float, false, 5 * sizeof(float), 3 * sizeof(float));
         GL.EnableVertexAttribArray(1); //Binding uv position to second shader parameter
 
+        GL.BindVertexArray(0);
         _texture = new Texture("perfection.png");
         _texture.Use(TextureUnit.Texture0);
         base.OnLoad();
@@ -98,7 +99,7 @@ public class ApplicationWindow : GameWindow
         }
         base.OnUpdateFrame(args);
     }
-    
+
     protected override void OnRenderFrame(FrameEventArgs e)
     {
         GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
@@ -107,18 +108,21 @@ public class ApplicationWindow : GameWindow
         _texture.Use(TextureUnit.Texture0);
         _shader.Use();
 
-        double time = DateTime.Now.Millisecond / 1000d * 180d;
-        time = time * 2d - 1d;
-        Matrix4 transform = Matrix4.Identity;
-        Matrix4 model = Matrix4.CreateRotationY((float)MathHelper.DegreesToRadians(time))
-            * Matrix4.CreateRotationX((float)MathHelper.DegreesToRadians(time));
-        Matrix4 view = Matrix4.CreateTranslation(0f, 0f, -3f);
-        Matrix4 projection = Matrix4.CreatePerspectiveFieldOfView(MathHelper.DegreesToRadians(45.0f), 800f / 600f, 0.1f, 100.0f);
-        transform = transform * model * view * projection;
-        _shader.SetUniformMatrix4("transform", ref transform);
+        for (int i = 0; i < 10; i++)
+        {
+            double time = DateTime.Now.Millisecond / 1000d * 180d;
+            time = time * 2d - 1d;
+            Matrix4 transform = Matrix4.Identity;
+            Matrix4 model = Matrix4.CreateRotationY((float)MathHelper.DegreesToRadians(time))
+                            * Matrix4.CreateRotationX((float)MathHelper.DegreesToRadians(time));
+            Matrix4 view = Matrix4.CreateTranslation(0f, 0f, -3f);
+            Matrix4 projection = Matrix4.CreatePerspectiveFieldOfView(MathHelper.DegreesToRadians(45.0f), 800f / 600f, 0.1f, 100.0f);
+            transform = transform * model * view * projection;
+            _shader.SetUniformMatrix4("transform", ref transform);
         
-        GL.DrawArrays(PrimitiveType.Triangles, 0, 36);
-
+            GL.DrawArrays(PrimitiveType.Triangles, 0, 36);
+        }
+        
         Context.SwapBuffers();
         base.OnRenderFrame(e);
     }

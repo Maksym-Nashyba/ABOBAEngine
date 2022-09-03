@@ -103,8 +103,7 @@ public class Shader : IDisposable
     {
         GL.DeleteProgram(_handle);
     }
-
-
+    
     public void Dispose()
     {
         Dispose(true);
