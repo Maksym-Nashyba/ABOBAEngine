@@ -1,16 +1,16 @@
 ﻿namespace ABOBAEngine.Rendering.Materials;
 
-public abstract class Material
+public class Material
 {
-    private Shader _shader;
+    public readonly Shader Shader;
 
     public Material(Shader shader)
     {
-        _shader = shader;
+        Shader = shader;
     }
 
     public virtual void Use()
     {
-        _shader.Use();
+        Shader.Use();
     }
 }
