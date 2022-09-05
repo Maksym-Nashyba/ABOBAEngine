@@ -32,9 +32,9 @@ public class RenderObject
                 0.0f, 0.0f
             }).Build();
         
+        int vertexArrayObject = GL.GenVertexArray();
         int verticesVBO = GL.GenBuffer();
         int albedoUVsVBO = GL.GenBuffer();
-        int vertexArrayObject = GL.GenVertexArray();
         GL.BindVertexArray(vertexArrayObject);
         material.Use();
         
@@ -48,7 +48,7 @@ public class RenderObject
         GL.BufferData(BufferTarget.ArrayBuffer, model.AlbedoUVs.Length * sizeof(float), model.AlbedoUVs,
             BufferUsageHint.StaticDraw);
         GL.VertexAttribPointer(1, 2, VertexAttribPointerType.Float, false, 2 * sizeof(float), 0);
-        GL.EnableVertexAttribArray(0);
+        GL.EnableVertexAttribArray(1);
         
         GL.BindVertexArray(0);
         return new RenderObject
@@ -77,7 +77,7 @@ public class RenderObject
         transform = transform * model * view * projection;
         _material.Shader.SetUniformMatrix4("transform", ref transform);
         
-        GL.DrawArrays(PrimitiveType.Triangles, 0, 1);
+        GL.DrawArrays(PrimitiveType.Triangles, 0, 6);
     }
 
     public void DisposeOf()

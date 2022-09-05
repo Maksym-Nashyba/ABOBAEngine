@@ -26,6 +26,7 @@ public class Model
         public ModelBuilder(float[] _vertices)
         {
             _model = new Model();
+            SetVertices(_vertices);
         }
     
         public Model Build()
