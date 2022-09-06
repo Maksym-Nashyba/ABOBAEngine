@@ -1,4 +1,5 @@
 ﻿using ABOBAEngine.Rendering.Materials;
+using ABOBAEngine.Rendering.Models;
 using OpenTK.Mathematics;
 using OpenTK.Windowing.Common;
 using OpenTK.Windowing.Desktop;
@@ -30,9 +31,21 @@ public class ApplicationWindow : GameWindow
         GL.Enable(EnableCap.DepthTest); 
         GL.ClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 
+        float[] vertices = {
+            0.5f,  0.5f, 0.0f,  // top right
+            0.5f, -0.5f, 0.0f,  // bottom right
+            -0.5f, -0.5f, 0.0f,  // bottom left
+            -0.5f,  0.5f, 0.0f   // top left
+        };
+        uint[] indices = {  // note that we start from 0!
+            0, 1, 3,   // first triangle
+            1, 2, 3    // second triangle
+        };
+        Model model = new Model(vertices, indices);
+        
         Shader shader = new Shader("shader.vert", "shader.frag");
         Material material = new Material(shader);
-        _renderObject = RenderObject.Instantiate(null, material);
+        _renderObject = RenderObject.Instantiate(model, material);
         
         _texture = new Texture("perfection.png");
         _texture.Use(TextureUnit.Texture0);
