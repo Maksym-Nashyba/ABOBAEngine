@@ -10,7 +10,6 @@ namespace ABOBAEngine;
 
 public class ApplicationWindow : GameWindow
 {
-    private Texture _texture;
     private Camera _camera;
     private RenderObject _renderObject;
     
@@ -47,8 +46,6 @@ public class ApplicationWindow : GameWindow
         Material material = new Material(shader);
         _renderObject = RenderObject.Instantiate(model, material);
         
-        _texture = new Texture("perfection.png");
-        _texture.Use(TextureUnit.Texture0);
         base.OnLoad();
     }
 
@@ -66,8 +63,6 @@ public class ApplicationWindow : GameWindow
     protected override void OnRenderFrame(FrameEventArgs e)
     {
         GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
-
-        _texture.Use(TextureUnit.Texture0);
 
         _renderObject.Render(_camera);
         
