@@ -5,7 +5,7 @@ namespace ABOBAEngine.Rendering.Materials;
 public class Material
 {
     public readonly Shader Shader;
-    private Texture _texture;
+    private readonly Texture _texture;
 
     public Material(Shader shader)
     {

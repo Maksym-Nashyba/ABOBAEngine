@@ -19,10 +19,10 @@ public class Model
         Triangles = triangles;
         OptionalData = new Dictionary<byte, float[]>();
         OptionalData.Add(AlbedoUVsKey, new[] {
-            1.0f, 1.0f,
-            1.0f, 0.0f,
-            0.0f, 0.0f,
-            0.0f, 1.0f
+            1.0f, 1.0f, //r t
+            1.0f, 0.0f, //r b
+            0.0f, 0.0f, //l b
+            0.0f, 1.0f  //l t
         });
     }
 }
