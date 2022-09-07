@@ -13,16 +13,50 @@ public class Model
     
     protected readonly Dictionary<byte, float[]> OptionalData;
 
-    public Model(float[] vertices, uint[] triangles)
+    private Model(float[] vertices, uint[] triangles)
     {
         Vertices = vertices;
         Triangles = triangles;
         OptionalData = new Dictionary<byte, float[]>();
-        OptionalData.Add(AlbedoUVsKey, new[] {
-            1.0f, 1.0f, //r t
-            1.0f, 0.0f, //r b
-            0.0f, 0.0f, //l b
-            0.0f, 1.0f  //l t
-        });
+    }
+
+    public static ModelBuilder FromMesh(float[] vertices, uint[] triangles)
+    {
+        return new ModelBuilder(vertices, triangles);
+    }
+
+    public class ModelBuilder
+    {
+        private Model _model;
+
+        public ModelBuilder(float[] vertices, uint[] triangles)
+        {
+            _model = new Model(vertices, triangles);
+        }
+
+        public Model Build()
+        {
+            return _model;
+        }
+        
+        public ModelBuilder WithAlbedoUVs(float[] albedoUVs)
+        {
+            if (albedoUVs.Length % 2 != 0)
+                throw new ArgumentException("Odd number of uv coordinates. Correct structure: [x,y,x,y,x,y...]");
+            AddOrRewrite(AlbedoUVsKey, albedoUVs);
+            return this;
+        }
+
+        private void AddOrRewrite(byte key, float[] value)
+        {
+            if (_model.OptionalData.ContainsKey(key))
+            {
+                _model.OptionalData[key] = value;
+            }
+            else
+            {
+                _model.OptionalData.Add(key, value);
+            }
+        }
     }
 }

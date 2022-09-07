@@ -10,10 +10,10 @@ public class RenderObject
     private Model _model;
     private Material _material;
 
-    private int _vertexArrayObject;//this models space in V-RAM
-    private int _elementBufferObject;//order of vertices in mesh
-    private int _verticesVBO;//VertexBufferObject - array of vertices
-    private int _albedoUVsVBO;//array of texture UVs
+    private int _vertexArrayObject;     //this models space in V-RAM
+    private int _elementBufferObject;   //order of vertices in mesh
+    private int _verticesVBO;           //VertexBufferObject - array of vertices
+    private int _albedoUVsVBO;          //array of texture UVs
 
     public static RenderObject Instantiate(Model model, Material material)
     {
