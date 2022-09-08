@@ -3,21 +3,62 @@
 public sealed class ObjModelLoader : ModelLoader
 {
     private const string FileExtension = ".obj";
+    private const int ReadChunkSize = 6400;
 
     private ObjModelLoader(string path) : base(path)
     {
     }
 
-    public override ModelLoader ForPath(string path)
+    protected override bool IsValidFile(string path)
     {
-        if (!path.EndsWith(FileExtension))
-            throw new ArgumentException($"Wrong file extension at:{path}. Should be .obj");
-
-        return new ObjModelLoader(path);
+        return path.EndsWith(FileExtension) && File.Exists(path);
     }
 
-    public override Model Load()
+    public override async Task<Model> Load()
     {
-        throw new NotImplementedException();
+        float[] vertices;
+        uint[] triangles;
+        
+        using (StreamReader reader = GetStream())
+        {
+            vertices = await ReadVertices(reader);
+            triangles = await ReadTriangles(reader);
+        }
+
+        return Model.FromMesh(vertices, triangles).Build();
+    }
+
+    private async Task<float[]> ReadVertices(StreamReader reader)
+    {
+        List<Task> chunkProcesses = new List<Task>();
+        List<float[]> resultChunks = new List<float[]>();
+        
+        int iteration = 0;
+        bool reachedEnd;
+        do
+        {
+            char[] buffer = new char[ReadChunkSize];
+            reader.Read(buffer, 0, ReadChunkSize);
+
+            resultChunks.EnsureCapacity(iteration + 1);
+            chunkProcesses.Add(ReadVerticesFromChunk(buffer, ref resultChunks, iteration));
+            iteration++;
+            reachedEnd = reader.EndOfStream || !buffer[6350..6399].Contains('v');
+        } while (!reachedEnd);
+
+        await Task.WhenAll(chunkProcesses);
+        List<float> vertices = new List<float>();
+        return vertices.ToArray();
+    }
+
+    private Task ReadVerticesFromChunk(char[] inputBuffer, 
+        ref List<float[]> outputBufferCollection, int outputBufferIndex)
+    {
+        return Task.FromResult<float[]>(null);
+    }
+
+    private Task<uint[]> ReadTriangles(StreamReader reader)
+    {
+        return null;
     }
 }

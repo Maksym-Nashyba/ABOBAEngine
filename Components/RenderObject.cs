@@ -3,9 +3,9 @@ using ABOBAEngine.Rendering.Models;
 using OpenTK.Graphics.OpenGL4;
 using OpenTK.Mathematics;
 
-namespace ABOBAEngine;
+namespace ABOBAEngine.Components;
 
-public class RenderObject
+public class RenderObject : SceneObject
 {
     private Model _model;
     private Material _material;

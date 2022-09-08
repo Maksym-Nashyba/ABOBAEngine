@@ -1,4 +1,5 @@
-﻿using ABOBAEngine.Rendering.Materials;
+﻿using ABOBAEngine.Components;
+using ABOBAEngine.Rendering.Materials;
 using ABOBAEngine.Rendering.Models;
 using OpenTK.Mathematics;
 using OpenTK.Windowing.Common;
@@ -24,7 +25,10 @@ public class ApplicationWindow : GameWindow
     {
         _camera = new Camera
         {
-            Position = new Vector3(0f, 0f, -2f)
+            Transform =
+            {
+                Position = new Vector3(0, 0, -2f)
+            }
         };
 
         GL.Enable(EnableCap.DepthTest);
@@ -61,10 +65,43 @@ public class ApplicationWindow : GameWindow
 
     protected override void OnUpdateFrame(FrameEventArgs args)
     {
+        Vector3 front = new Vector3(0.0f, 0.0f, -1.0f);
+        Vector3 up = new Vector3(0.0f, 1.0f,  0.0f);
+        
         KeyboardState keyboard = KeyboardState.GetSnapshot();
         if (keyboard.IsKeyDown(Keys.Escape))
         {
             Close();
+        }
+        
+        if (keyboard.IsKeyDown(Keys.W))
+        {
+            _camera.Transform.Position += front * 0.05f; //Forward 
+        }
+
+        if (keyboard.IsKeyDown(Keys.S))
+        {
+            _camera.Transform.Position -= front * 0.05f; //Backwards
+        }
+
+        if (keyboard.IsKeyDown(Keys.A))
+        {
+            _camera.Transform.Position -= Vector3.Normalize(Vector3.Cross(front, up)) * 0.05f; //Left
+        }
+
+        if (keyboard.IsKeyDown(Keys.D))
+        {
+            _camera.Transform.Position += Vector3.Normalize(Vector3.Cross(front, up)) * 0.05f; //Right
+        }
+
+        if (keyboard.IsKeyDown(Keys.Space))
+        {
+            _camera.Transform.Position += up * 0.05f; //Up 
+        }
+
+        if (keyboard.IsKeyDown(Keys.LeftShift))
+        {
+            _camera.Transform.Position -= up * 0.05f; //Down
         }
 
         base.OnUpdateFrame(args);
@@ -92,4 +129,6 @@ public class ApplicationWindow : GameWindow
         _renderObject.DisposeOf();
         base.OnUnload();
     }
+    
+
 }
