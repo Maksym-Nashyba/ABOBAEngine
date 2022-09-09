@@ -18,7 +18,8 @@ public sealed class ObjModelLoader : ModelLoader
     {
         float[] vertices;
         uint[] triangles;
-        
+        ReadOnlySpan<char> z
+
         using (StreamReader reader = GetStream())
         {
             vertices = await ReadVertices(reader);
@@ -30,33 +31,9 @@ public sealed class ObjModelLoader : ModelLoader
 
     private async Task<float[]> ReadVertices(StreamReader reader)
     {
-        List<Task> chunkProcesses = new List<Task>();
-        List<float[]> resultChunks = new List<float[]>();
         
-        int iteration = 0;
-        bool reachedEnd;
-        do
-        {
-            char[] buffer = new char[ReadChunkSize];
-            reader.Read(buffer, 0, ReadChunkSize);
-
-            resultChunks.EnsureCapacity(iteration + 1);
-            chunkProcesses.Add(ReadVerticesFromChunk(buffer, ref resultChunks, iteration));
-            iteration++;
-            reachedEnd = reader.EndOfStream || !buffer[6350..6399].Contains('v');
-        } while (!reachedEnd);
-
-        await Task.WhenAll(chunkProcesses);
-        List<float> vertices = new List<float>();
-        return vertices.ToArray();
     }
-
-    private Task ReadVerticesFromChunk(char[] inputBuffer, 
-        ref List<float[]> outputBufferCollection, int outputBufferIndex)
-    {
-        return Task.FromResult<float[]>(null);
-    }
-
+    
     private Task<uint[]> ReadTriangles(StreamReader reader)
     {
         return null;
