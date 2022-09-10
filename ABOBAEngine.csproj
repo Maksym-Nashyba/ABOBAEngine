@@ -21,13 +21,16 @@
     </ItemGroup>
 
     <ItemGroup>
+      <Content Include="bin\Debug\net6.0\copper_block.png" />
+      <Content Include="bin\Debug\net6.0\copper_ore.png" />
+      <Content Include="bin\Debug\net6.0\metal_cock.mtl" />
+      <Content Include="bin\Debug\net6.0\metal_cock.obj" />
+      <Content Include="bin\Debug\net6.0\perfection.obj" />
       <Content Include="bin\Debug\net6.0\perfection.png" />
       <Content Include="bin\Debug\net6.0\shader.frag" />
       <Content Include="bin\Debug\net6.0\shader.vert" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <Folder Include="Utils" />
+      <Content Include="bin\Debug\net6.0\titanium_ore.mtl" />
+      <Content Include="bin\Debug\net6.0\titanium_ore.obj" />
     </ItemGroup>
 
 </Project>

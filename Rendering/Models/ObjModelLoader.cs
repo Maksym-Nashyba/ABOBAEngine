@@ -3,9 +3,8 @@
 public sealed class ObjModelLoader : ModelLoader
 {
     private const string FileExtension = ".obj";
-    private const int ReadChunkSize = 6400;
 
-    private ObjModelLoader(string path) : base(path)
+    public ObjModelLoader(string path) : base(path)
     {
     }
 
@@ -18,23 +17,40 @@ public sealed class ObjModelLoader : ModelLoader
     {
         float[] vertices;
         uint[] triangles;
-        ReadOnlySpan<char> z
-
+        
         using (StreamReader reader = GetStream())
         {
-            vertices = await ReadVertices(reader);
-            triangles = await ReadTriangles(reader);
+            //TODO read and process data in chunks
+            Memory<char> buffer = new Memory<char>(new char[reader.BaseStream.Length]);
+            await reader.ReadAsync(buffer);
+            vertices = await ReadVertices(ref buffer);
+            triangles = await ReadTriangles(ref buffer);
         }
+        
 
         return Model.FromMesh(vertices, triangles).Build();
     }
 
-    private async Task<float[]> ReadVertices(StreamReader reader)
+    private Task<float[]> ReadVertices(ref Memory<char> buffer)
     {
-        
+        int position = 0;
+        List<float> result = new List<float>();
+        ReadOnlySpan<char> bufferSpan = ((ReadOnlyMemory<char>)buffer).Span;
+        while (bufferSpan[position-1] != '\n')
+        {
+            position++;
+        }
+        return Task.FromResult(result.ToArray());
+
+        void ReadLine()
+        {
+            
+        }
     }
     
-    private Task<uint[]> ReadTriangles(StreamReader reader)
+    
+    
+    private Task<uint[]> ReadTriangles(ref Memory<char> buffer)
     {
         return null;
     }
