@@ -33,19 +33,7 @@ public sealed class ObjModelLoader : ModelLoader
 
     private Task<float[]> ReadVertices(ref Memory<char> buffer)
     {
-        int position = 0;
-        List<float> result = new List<float>();
-        ReadOnlySpan<char> bufferSpan = ((ReadOnlyMemory<char>)buffer).Span;
-        while (bufferSpan[position-1] != '\n')
-        {
-            position++;
-        }
-        return Task.FromResult(result.ToArray());
-
-        void ReadLine()
-        {
-            
-        }
+        throw new NotImplementedException();
     }
     
     

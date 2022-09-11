@@ -5,47 +5,76 @@ public class LineByLineReader : IDisposable
     private StreamReader _streamReader;
     private int _position;
     
+    private TextBuffer[] _buffers;
+    private TextBuffer _activeBuffer;
+    private readonly int _bufferLength;
+
+    private Func<ReadOnlyMemory<char>> LineReadDelegate;
     
-    private readonly int _expectedMaxLineLength;
-    private readonly int _mainBufferLength;
-    
-    public LineByLineReader(StreamReader streamReader, int expectedMaxLineLength = 64, int mainBufferLength = 32000)
+    public LineByLineReader(StreamReader streamReader, int bufferLength = 32000)
     {
         _streamReader = streamReader;
-        _expectedMaxLineLength = expectedMaxLineLength;
-        _mainBufferLength = mainBufferLength;
+        _bufferLength = bufferLength;
         
-        _mainBuffer = new Memory<char>(new char[_mainBufferLength]);
-        _reserveBuffer = new Memory<char>(new char[_expectedMaxLineLength]);
+        _buffers = new[] { new TextBuffer(bufferLength), new TextBuffer(bufferLength) };
+        _activeBuffer = _buffers[0];
+        InitializeBuffers();
     }
 
     public ReadOnlyMemory<char> ReadLine()
     {
-           
+        ReadOnlyMemory<char> result = LineReadDelegate.Invoke();
+        _position += result.Length+1;
+        if (_position >= _bufferLength - 1) SwapBuffers();
+        return result;
     }
 
     public ReadOnlyMemory<char> PeekLine()
     {
-        int positionBefore = _position;
-        ReadOnlyMemory<char> result = GetLineFromPosition(_position);
-        _position = positionBefore;
-        return result;
+        return LineReadDelegate.Invoke();
     }
 
-    private ReadOnlyMemory<char> GetLineFromCurrentPosition()
+    private ReadOnlyMemory<char> GetNextLine()
     {
-        return GetLineFromPosition(_position);
+        ReadOnlySpan<char> span = _activeBuffer.ReadOnlyMemory.Span;
+        int position = _position;
+        while (span[position] != '\n') position++;
+        return _activeBuffer.ReadOnlyMemory.Slice(0, position - _position - 1);
     }
     
-    private ReadOnlyMemory<char> GetLineFromPosition(int position)
+
+    private ReadOnlyMemory<char> GetNextLineWithChecks()
     {
         throw new NotImplementedException();
     }
-
-    private void ConsumeChars(int charsToConsume)
+    
+    private void SwapBuffers()
     {
-        _position += charsToConsume;
-        if(_position > )
+        ReadToBuffer(_buffers[1]);
+        LineReadDelegate = _buffers[1].IsFull ? GetNextLine : GetNextLineWithChecks;
+        
+        _activeBuffer = _activeBuffer.Equals(_buffers[0]) ? _buffers[1] : _buffers[0];
+        _position -= _bufferLength;
+    }
+    
+    private void InitializeBuffers()
+    {
+        ReadToBuffer(_buffers[0]);
+        if (_buffers[0].IsFull)
+        {
+            LineReadDelegate = GetNextLine;
+            ReadToBuffer(_buffers[1]);
+        }
+        else
+        {
+            LineReadDelegate = GetNextLineWithChecks; 
+        }
+    }
+    
+    private void ReadToBuffer(TextBuffer buffer)
+    {
+        int readLength = _streamReader.Read(buffer.Memory.Span);
+        buffer.IsFull = readLength == _bufferLength;
     }
     
     public void Dispose()
@@ -53,15 +82,15 @@ public class LineByLineReader : IDisposable
         _streamReader.Dispose();
     }
 
-    private struct CharBuffer
+    private class TextBuffer
     {
+        public ReadOnlyMemory<char> ReadOnlyMemory => Memory;
+        public bool IsFull;
         public readonly Memory<char> Memory;
-        public readonly int Capacity;
 
-        public CharBuffer(int capacity)
+        public TextBuffer(int bufferLength)
         {
-            Capacity = capacity;
-            Memory = new Memory<char>(new char[Capacity]);
+            Memory = new Memory<char>(new char[bufferLength]);
         }
     }
 }
