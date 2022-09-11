@@ -1,4 +1,6 @@
-﻿namespace ABOBAEngine.Rendering.Models;
+﻿using ABOBAEngine.Utils;
+
+namespace ABOBAEngine.Rendering.Models;
 
 public sealed class ObjModelLoader : ModelLoader
 {
@@ -18,17 +20,13 @@ public sealed class ObjModelLoader : ModelLoader
         float[] vertices;
         uint[] triangles;
         
-        using (StreamReader reader = GetStream())
+        using (LineByLineReader reader = new LineByLineReader(GetStream()))
         {
-            //TODO read and process data in chunks
-            Memory<char> buffer = new Memory<char>(new char[reader.BaseStream.Length]);
-            await reader.ReadAsync(buffer);
-            vertices = await ReadVertices(ref buffer);
-            triangles = await ReadTriangles(ref buffer);
+            
         }
         
 
-        return Model.FromMesh(vertices, triangles).Build();
+        return Model.FromMesh(null, null).Build();
     }
 
     private Task<float[]> ReadVertices(ref Memory<char> buffer)
