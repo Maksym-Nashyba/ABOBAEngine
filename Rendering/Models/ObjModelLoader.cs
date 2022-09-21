@@ -6,6 +6,13 @@ public sealed class ObjModelLoader : ModelLoader
 {
     private const string FileExtension = ".obj";
 
+    private ObjLineParser[] _parsers = new ObjLineParser[]
+    {
+        new VertexObjLineParser(),
+        new AlbedoUVObjLineParser(),
+        new TriangleObjLineParser()
+    };
+
     public ObjModelLoader(string path) : base(path)
     {
     }
@@ -15,29 +22,27 @@ public sealed class ObjModelLoader : ModelLoader
         return path.EndsWith(FileExtension) && File.Exists(path);
     }
 
-    public override async Task<Model> Load()
+    public override Model Load()
     {
-        float[] vertices;
-        uint[] triangles;
-        
-        using (LineByLineReader reader = new LineByLineReader(GetStream()))
+        using LineByLineReader reader = new LineByLineReader(GetStream());
+
+        while (!reader.IsEmpty)
         {
-            
+            ReadOnlyMemory<char> line = reader.ReadLine();
+            for (int i = 0; i < _parsers.Length; i++)
+            {
+                if (_parsers[i].LineFits(line))
+                {
+                    _parsers[i].Parse(line);
+                    break;
+                }
+            }
         }
         
-
-        return Model.FromMesh(null, null).Build();
-    }
-
-    private Task<float[]> ReadVertices(ref Memory<char> buffer)
-    {
-        throw new NotImplementedException();
-    }
-    
-    
-    
-    private Task<uint[]> ReadTriangles(ref Memory<char> buffer)
-    {
-        return null;
+        return Model.FromMesh(
+                ((VertexObjLineParser)_parsers[0]).Vertices.ToArray(),
+                ((TriangleObjLineParser)_parsers[2]).Triangles.ToArray())
+            .WithAlbedoUVs(((AlbedoUVObjLineParser)_parsers[1]).AlbedoUVs.ToArray())
+            .Build();
     }
 }

@@ -37,28 +37,8 @@ public class ApplicationWindow : GameWindow
         GL.ClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 
         ObjModelLoader modelLoader = new ObjModelLoader("perfection.obj");
-        Model model = await modelLoader.Load();
-        
-        /*float[] vertices = {
-            0.5f,  0.5f, 0.0f,   // top right
-            0.5f, -0.5f, 0.0f,   // bottom right
-            -0.5f, -0.5f, 0.0f,  // bottom left
-            -0.5f,  0.5f, 0.0f   // top left
-        };
-        uint[] indices = {
-            0, 1, 3,
-            1, 2, 3
-        };
-        
-        Model model = Model.FromMesh(vertices, indices)
-            .WithAlbedoUVs(new float[]
-            {
-                1, 1,
-                1, 0,
-                0, 0,
-                0, 1
-            }).Build();*/
-        
+        Model model = await Task.Run(() => modelLoader.Load());
+
         Shader shader = new Shader("shader.vert", "shader.frag");
         Material material = new Material(shader);
         _renderObject = RenderObject.Instantiate(model, material);

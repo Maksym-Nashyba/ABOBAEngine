@@ -2,7 +2,6 @@
 
 public abstract class ModelLoader
 {
-    private string _path;
     protected string Path
     {
         get => _path;
@@ -12,6 +11,7 @@ public abstract class ModelLoader
             _path = value;
         }
     }
+    private string _path;
 
     public ModelLoader(string path)
     {
@@ -20,7 +20,7 @@ public abstract class ModelLoader
     
     protected abstract bool IsValidFile(string path);
 
-    public abstract Task<Model> Load();
+    public abstract Model Load();
 
     protected StreamReader GetStream()
     {

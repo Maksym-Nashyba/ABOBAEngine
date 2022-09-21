@@ -1,14 +1,14 @@
 ﻿namespace ABOBAEngine.Utils;
 
-public class LineByLineReader : IDisposable
+public sealed class LineByLineReader : IDisposable
 {
     public bool IsEmpty { get; private set; }
-    private StreamReader _streamReader;
     private int _position;
-    
-    private TextBuffer[] _buffers;
     private TextBuffer _activeBuffer;
+    
+    private readonly TextBuffer[] _buffers;
     private readonly int _bufferLength;
+    private readonly StreamReader _streamReader;
 
     private Func<ReadOnlyMemory<char>> LineReadDelegate;
     
@@ -84,7 +84,7 @@ public class LineByLineReader : IDisposable
         LineReadDelegate = _buffers[1].IsFull ? GetNextLine : GetNextLineWithChecks;
         
         _activeBuffer = _activeBuffer.Equals(_buffers[0]) ? _buffers[1] : _buffers[0];
-        _position -= _bufferLength;
+        _position = 0;
     }
     
     private void InitializeBuffers()
@@ -112,17 +112,18 @@ public class LineByLineReader : IDisposable
         _streamReader.Dispose();
     }
 
-    private class TextBuffer
+    private sealed class TextBuffer
     {
         public ReadOnlyMemory<char> ReadOnlyMemory => Memory;
-        public bool IsFull => Length == Capacity;
+        public bool IsFull => Length == _capacity;
         public int Length;
         public readonly Memory<char> Memory;
-        private readonly int Capacity;
+        
+        private readonly int _capacity;
 
         public TextBuffer(int bufferLength)
         {
-            Capacity = bufferLength;
+            _capacity = bufferLength;
             Memory = new Memory<char>(new char[bufferLength]);
         }
     }
