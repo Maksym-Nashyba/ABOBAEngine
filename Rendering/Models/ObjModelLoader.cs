@@ -6,8 +6,7 @@ public sealed class ObjModelLoader : ModelLoader
 {
     private const string FileExtension = ".obj";
 
-    private ObjLineParser[] _parsers = new ObjLineParser[]
-    {
+    private ObjLineParser[] _parsers = {
         new VertexObjLineParser(),
         new AlbedoUVObjLineParser(),
         new TriangleObjLineParser()
@@ -34,6 +33,7 @@ public sealed class ObjModelLoader : ModelLoader
                 if (_parsers[i].LineFits(line))
                 {
                     _parsers[i].Parse(line);
+
                     break;
                 }
             }

@@ -37,7 +37,7 @@ public class ApplicationWindow : GameWindow
         GL.ClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 
         ObjModelLoader modelLoader = new ObjModelLoader("perfection.obj");
-        Model model = await Task.Run(() => modelLoader.Load());
+        Model model =  modelLoader.Load();
 
         Shader shader = new Shader("shader.vert", "shader.frag");
         Material material = new Material(shader);
@@ -52,40 +52,13 @@ public class ApplicationWindow : GameWindow
         Vector3 up = new Vector3(0.0f, 1.0f,  0.0f);
         
         KeyboardState keyboard = KeyboardState.GetSnapshot();
-        if (keyboard.IsKeyDown(Keys.Escape))
-        {
-            Close();
-        }
-        
-        if (keyboard.IsKeyDown(Keys.W))
-        {
-            _camera.Transform.Position += front * 0.05f; //Forward 
-        }
-
-        if (keyboard.IsKeyDown(Keys.S))
-        {
-            _camera.Transform.Position -= front * 0.05f; //Backwards
-        }
-
-        if (keyboard.IsKeyDown(Keys.A))
-        {
-            _camera.Transform.Position -= Vector3.Normalize(Vector3.Cross(front, up)) * 0.05f; //Left
-        }
-
-        if (keyboard.IsKeyDown(Keys.D))
-        {
-            _camera.Transform.Position += Vector3.Normalize(Vector3.Cross(front, up)) * 0.05f; //Right
-        }
-
-        if (keyboard.IsKeyDown(Keys.Space))
-        {
-            _camera.Transform.Position += up * 0.05f; //Up 
-        }
-
-        if (keyboard.IsKeyDown(Keys.LeftShift))
-        {
-            _camera.Transform.Position -= up * 0.05f; //Down
-        }
+        if (keyboard.IsKeyDown(Keys.Escape)) Close();
+        if (keyboard.IsKeyDown(Keys.W)) _camera.Transform.Position += front * 0.05f; //Forward 
+        if (keyboard.IsKeyDown(Keys.S)) _camera.Transform.Position -= front * 0.05f; //Backwards
+        if (keyboard.IsKeyDown(Keys.A)) _camera.Transform.Position -= Vector3.Normalize(Vector3.Cross(front, up)) * 0.05f; //Left
+        if (keyboard.IsKeyDown(Keys.D)) _camera.Transform.Position += Vector3.Normalize(Vector3.Cross(front, up)) * 0.05f; //Right
+        if (keyboard.IsKeyDown(Keys.Space)) _camera.Transform.Position += up * 0.05f; //Up 
+        if (keyboard.IsKeyDown(Keys.LeftShift)) _camera.Transform.Position -= up * 0.05f; //Down
 
         base.OnUpdateFrame(args);
     }

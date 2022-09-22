@@ -39,7 +39,8 @@ public sealed class LineByLineReader : IDisposable
             if (iteratorPosition + 1 >= _bufferLength) return GetNextLineOnVerge();
             iteratorPosition++;
         }
-        return _activeBuffer.ReadOnlyMemory.Slice(_position, iteratorPosition - _position);
+        var result = _activeBuffer.ReadOnlyMemory.Slice(_position, iteratorPosition - _position);
+        return result;
     }
     
 
@@ -57,7 +58,9 @@ public sealed class LineByLineReader : IDisposable
             if (iteratorPosition + 1 >= _bufferLength) return GetNextLineOnVerge();
             iteratorPosition++;
         }
-        return _activeBuffer.ReadOnlyMemory.Slice(_position, iteratorPosition - _position);
+        var result = _activeBuffer.ReadOnlyMemory.Slice(_position, iteratorPosition - _position);
+
+        return result;
     }
 
     private ReadOnlyMemory<char> GetNextLineOnVerge()
@@ -75,7 +78,14 @@ public sealed class LineByLineReader : IDisposable
         SwapBuffers();
         ReadOnlyMemory<char> afterTear = LineReadDelegate.Invoke();
         result.AddRange(afterTear.ToArray());
-        return new ReadOnlyMemory<char>(result.ToArray());
+        
+        var resultt = new ReadOnlyMemory<char>(result.ToArray());
+        if (resultt.Length > 42)
+        {
+            int f = 0;
+        }
+
+        return resultt;
     }
 
     private void SwapBuffers()

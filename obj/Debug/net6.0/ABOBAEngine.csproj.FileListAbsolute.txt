@@ -86,7 +86,7 @@ D:\Projects\ABOBAEngine\obj\Debug\net6.0\ABOBAEngine.AssemblyInfo.cs
 D:\Projects\ABOBAEngine\obj\Debug\net6.0\ABOBAEngine.csproj.CoreCompileInputs.cache
 D:\Projects\ABOBAEngine\obj\Debug\net6.0\ABOBAEngine.csproj.CopyComplete
 D:\Projects\ABOBAEngine\obj\Debug\net6.0\ABOBAEngine.dll
-D:\Projects\ABOBAEngine\obj\Debug\net6.0\refint\ABOBAEngine.dll
 D:\Projects\ABOBAEngine\obj\Debug\net6.0\ABOBAEngine.pdb
 D:\Projects\ABOBAEngine\obj\Debug\net6.0\ABOBAEngine.genruntimeconfig.cache
 D:\Projects\ABOBAEngine\obj\Debug\net6.0\ref\ABOBAEngine.dll
+D:\Projects\ABOBAEngine\bin\Debug\net6.0\ref\ABOBAEngine.dll
