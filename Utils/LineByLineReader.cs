@@ -72,6 +72,11 @@ public sealed class LineByLineReader : IDisposable
 
         for (iteratorPosition = startPosition; iteratorPosition < _bufferLength; iteratorPosition++)
         {
+            if (iteratorPosition > 31998)
+            {
+                int f = 0;
+            }
+            
             if (span[iteratorPosition] == '\n') return new ReadOnlyMemory<char>(result.ToArray());
             result.Add(span[iteratorPosition]);
         }
@@ -100,15 +105,7 @@ public sealed class LineByLineReader : IDisposable
     private void InitializeBuffers()
     {
         ReadToBuffer(_buffers[0]);
-        if (_buffers[0].IsFull)
-        {
-            LineReadDelegate = GetNextLine;
-            ReadToBuffer(_buffers[1]);
-        }
-        else
-        {
-            LineReadDelegate = GetNextLineWithChecks; 
-        }
+        LineReadDelegate = _buffers[0].IsFull ? GetNextLine : GetNextLineWithChecks;
     }
     
     private void ReadToBuffer(TextBuffer buffer)
