@@ -5,6 +5,7 @@ public sealed class LineByLineReader : IDisposable
     public bool IsEmpty { get; private set; }
     private int _position;
     private TextBuffer _activeBuffer;
+    private TextBuffer _inActiveBuffer => _activeBuffer.Equals(_buffers[0]) ? _buffers[1] : _buffers[0];
     
     private readonly TextBuffer[] _buffers;
     private readonly int _bufferLength;
@@ -95,7 +96,7 @@ public sealed class LineByLineReader : IDisposable
 
     private void SwapBuffers()
     {
-        ReadToBuffer(_buffers[1]);
+        ReadToBuffer(_inActiveBuffer);
         LineReadDelegate = _buffers[1].IsFull ? GetNextLine : GetNextLineWithChecks;
         
         _activeBuffer = _activeBuffer.Equals(_buffers[0]) ? _buffers[1] : _buffers[0];
