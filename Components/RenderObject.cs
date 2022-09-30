@@ -33,7 +33,7 @@ public class RenderObject : SceneObject
         GL.BindBuffer(BufferTarget.ElementArrayBuffer, elementBufferObject);
         GL.BufferData(BufferTarget.ElementArrayBuffer, model.Vertices.Length * sizeof(uint), 
             model.Triangles, BufferUsageHint.StaticDraw);
-
+        
         GL.BindBuffer(BufferTarget.ArrayBuffer, albedoUVsVBO);
         GL.BufferData(BufferTarget.ArrayBuffer, model.AlbedoMapUVs.Length * sizeof(float), model.AlbedoMapUVs,
             BufferUsageHint.StaticDraw);

@@ -25,7 +25,7 @@ public abstract class ObjLineParser
 public sealed class VertexObjLineParser : ObjLineParser
 {
     public readonly List<float> Vertices = new List<float>();
-    private readonly char[] _pattern = new[] { 'v', ' ' };
+    private readonly char[] _pattern = { 'v', ' ' };
 
     public override char[] Pattern() => _pattern;
 
@@ -51,7 +51,7 @@ public sealed class VertexObjLineParser : ObjLineParser
 public sealed class TriangleObjLineParser : ObjLineParser
 {
     public readonly List<uint> Triangles = new List<uint>();
-    private readonly char[] _pattern = new[] { 'f', ' ' };
+    private readonly char[] _pattern = { 'f', ' ' };
 
     public override char[] Pattern() => _pattern;
 
@@ -74,7 +74,7 @@ public sealed class TriangleObjLineParser : ObjLineParser
 public sealed class AlbedoUVObjLineParser : ObjLineParser
 {
     public readonly List<float> AlbedoUVs = new List<float>();
-    private readonly char[] _pattern = new[] { 'v', 't', ' ' };
+    private readonly char[] _pattern = { 'v', 't', ' ' };
 
     public override char[] Pattern() => _pattern;
 
