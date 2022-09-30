@@ -27,16 +27,16 @@ public class ApplicationWindow : GameWindow
         {
             Transform =
             {
-                Position = new Vector3(0, 0, -2f)
+                Position = new Vector3(0, 0, -5f)
             }
         };
 
         GL.Enable(EnableCap.DepthTest);
         GL.Enable(EnableCap.CullFace);
-        GL.CullFace(CullFaceMode.Front);
+        GL.CullFace(CullFaceMode.Back);
         GL.ClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 
-        ObjModelLoader modelLoader = new ObjModelLoader("perfection.obj");
+        ObjModelLoader modelLoader = new ObjModelLoader("cube.obj");
         Model model =  modelLoader.Load();
 
         Shader shader = new Shader("shader.vert", "shader.frag");
