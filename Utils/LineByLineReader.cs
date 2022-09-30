@@ -1,22 +1,26 @@
-﻿namespace ABOBAEngine.Utils;
+﻿using System.Text;
+
+namespace ABOBAEngine.Utils;
 
 public sealed class LineByLineReader : IDisposable
 {
     public bool IsEmpty { get; private set; }
     private int _position;
+    private TextBuffer _inactiveBuffer => _activeBuffer.Equals(_buffers[0]) ? _buffers[1] : _buffers[0];
     private TextBuffer _activeBuffer;
-    private TextBuffer _inActiveBuffer => _activeBuffer.Equals(_buffers[0]) ? _buffers[1] : _buffers[0];
     
     private readonly TextBuffer[] _buffers;
     private readonly int _bufferLength;
-    private readonly StreamReader _streamReader;
+    private readonly FileStream _fileStream;
+    private readonly byte[] _byteBuffer;
 
     private Func<ReadOnlyMemory<char>> LineReadDelegate;
     
-    public LineByLineReader(StreamReader streamReader, int bufferLength = 32000)
+    public LineByLineReader(FileStream fileStream, int bufferLength = 500000)
     {
-        _streamReader = streamReader;
+        _fileStream = fileStream;
         _bufferLength = bufferLength;
+        _byteBuffer = new byte[bufferLength];
         
         _buffers = new[] { new TextBuffer(bufferLength), new TextBuffer(bufferLength) };
         _activeBuffer = _buffers[0];
@@ -51,7 +55,7 @@ public sealed class LineByLineReader : IDisposable
         int iteratorPosition = _position;
         while (span[iteratorPosition] != '\n')
         {
-            if (iteratorPosition < _activeBuffer.Length)
+            if (iteratorPosition >= _activeBuffer.Length - 1)
             {
                 IsEmpty = true;
                 break;
@@ -73,31 +77,20 @@ public sealed class LineByLineReader : IDisposable
 
         for (iteratorPosition = startPosition; iteratorPosition < _bufferLength; iteratorPosition++)
         {
-            if (iteratorPosition > 31998)
-            {
-                int f = 0;
-            }
-            
             if (span[iteratorPosition] == '\n') return new ReadOnlyMemory<char>(result.ToArray());
             result.Add(span[iteratorPosition]);
         }
         SwapBuffers();
         ReadOnlyMemory<char> afterTear = LineReadDelegate.Invoke();
         result.AddRange(afterTear.ToArray());
-        
-        var resultt = new ReadOnlyMemory<char>(result.ToArray());
-        if (resultt.Length > 42)
-        {
-            int f = 0;
-        }
 
-        return resultt;
+        return new ReadOnlyMemory<char>(result.ToArray());
     }
 
     private void SwapBuffers()
     {
-        ReadToBuffer(_inActiveBuffer);
-        LineReadDelegate = _buffers[1].IsFull ? GetNextLine : GetNextLineWithChecks;
+        ReadToBuffer(_inactiveBuffer);
+        LineReadDelegate = _inactiveBuffer.IsFull ? GetNextLine : GetNextLineWithChecks;
         
         _activeBuffer = _activeBuffer.Equals(_buffers[0]) ? _buffers[1] : _buffers[0];
         _position = 0;
@@ -111,13 +104,16 @@ public sealed class LineByLineReader : IDisposable
     
     private void ReadToBuffer(TextBuffer buffer)
     {
-        int readLength = _streamReader.Read(buffer.Memory.Span);
+        Span<byte> byteBuffer = new Span<byte>(_byteBuffer);
+        int readLength = _fileStream.Read(byteBuffer);
+        _fileStream.Flush();
         buffer.Length = readLength;
+        Encoding.UTF8.GetChars(byteBuffer, buffer.Memory.Span);
     }
     
     public void Dispose()
     {
-        _streamReader.Dispose();
+        _fileStream.Dispose();
     }
 
     private sealed class TextBuffer

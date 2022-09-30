@@ -22,8 +22,8 @@ public abstract class ModelLoader
 
     public abstract Model Load();
 
-    protected StreamReader GetStream()
+    protected FileStream GetStream()
     {
-        return File.OpenText(Path);
+        return File.Open(Path, FileMode.Open);
     }
 }

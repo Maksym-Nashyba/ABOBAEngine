@@ -24,16 +24,16 @@ public sealed class ObjModelLoader : ModelLoader
     public override Model Load()
     {
         using LineByLineReader reader = new LineByLineReader(GetStream());
-
+        int n = 1;
         while (!reader.IsEmpty)
         {
+            n++;
             ReadOnlyMemory<char> line = reader.ReadLine();
             for (int i = 0; i < _parsers.Length; i++)
             {
                 if (_parsers[i].LineFits(line))
                 {
                     _parsers[i].Parse(line);
-
                     break;
                 }
             }
