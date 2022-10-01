@@ -21,7 +21,7 @@ public class ApplicationWindow : GameWindow
         Title = title;
     }
 
-    protected override async void OnLoad()
+    protected override void OnLoad()
     {
         _camera = new Camera
         {
@@ -36,7 +36,7 @@ public class ApplicationWindow : GameWindow
         GL.CullFace(CullFaceMode.Back);
         GL.ClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 
-        ObjModelLoader modelLoader = new ObjModelLoader("cube.obj");
+        ObjModelLoader modelLoader = new ObjModelLoader("perfection.obj");
         Model model =  modelLoader.Load();
 
         Shader shader = new Shader("shader.vert", "shader.frag");

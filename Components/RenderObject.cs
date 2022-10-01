@@ -31,7 +31,7 @@ public class RenderObject : SceneObject
         GL.EnableVertexAttribArray(0);
         
         GL.BindBuffer(BufferTarget.ElementArrayBuffer, elementBufferObject);
-        GL.BufferData(BufferTarget.ElementArrayBuffer, model.Vertices.Length * sizeof(uint), 
+        GL.BufferData(BufferTarget.ElementArrayBuffer, model.Triangles.Length * sizeof(uint), 
             model.Triangles, BufferUsageHint.StaticDraw);
         
         GL.BindBuffer(BufferTarget.ArrayBuffer, albedoUVsVBO);
