@@ -48,9 +48,11 @@ public sealed class VertexObjLineParser : ObjLineParser
     }
 }
 
-public sealed class TriangleObjLineParser : ObjLineParser
+public sealed class FaceObjLineParser : ObjLineParser
 {
-    public readonly List<uint> Triangles = new List<uint>();
+    public readonly List<uint> VertexIndices = new List<uint>();
+    public readonly List<uint> NormalIndices = new List<uint>();
+    public readonly List<uint> UVIndices = new List<uint>();
     private readonly char[] _pattern = { 'f', ' ' };
 
     public override char[] Pattern() => _pattern;
@@ -58,15 +60,27 @@ public sealed class TriangleObjLineParser : ObjLineParser
     public override void Parse(ReadOnlyMemory<char> line)
     {
         ReadOnlySpan<char> span = line.Span;
+        int position = 0;
         for (int i = 0; i < 3; i++)
         {
-            int position = 0;
             while (span[position] != ' ') position++;
             span = span.Slice(position + 1);
             position = 0;
+            
             while (span[position] != '/') position++;
-            Triangles.Add(uint.Parse(span.Slice(0, position)) - 1);
+            VertexIndices.Add(uint.Parse(span.Slice(0, position)) - 1);
             span = span.Slice(++position);
+            position = 0;
+            
+            while (span[position] != '/') position++;
+            NormalIndices.Add(uint.Parse(span.Slice(0, position)) - 1);
+            span = span.Slice(++position);
+            position = 0;
+
+            while (position < span.Length && span[position] != ' ') position++;
+            UVIndices.Add(uint.Parse(span.Slice(0, position)) - 1);
+            if(position <= span.Length)span = span.Slice(position);
+            position = 0;
         }
     }
 }

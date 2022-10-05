@@ -9,7 +9,7 @@ public sealed class ObjModelLoader : ModelLoader
     private ObjLineParser[] _parsers = {
         new VertexObjLineParser(),
         new AlbedoUVObjLineParser(),
-        new TriangleObjLineParser()
+        new FaceObjLineParser()
     };
 
     public ObjModelLoader(string path) : base(path)
@@ -24,6 +24,8 @@ public sealed class ObjModelLoader : ModelLoader
     public override Model Load()
     {
         UnfinishedObjData rawData = ReadRawData();
+        
+        SortVertexData(rawData);
         
         return Model.FromMesh(
                 rawData.Vertices,
@@ -50,8 +52,18 @@ public sealed class ObjModelLoader : ModelLoader
 
         float[] vertices = ((VertexObjLineParser)_parsers[0]).Vertices.ToArray();
         float[] albedoUVs = ((AlbedoUVObjLineParser)_parsers[1]).AlbedoUVs.ToArray();
-        uint[] triangles = ((TriangleObjLineParser)_parsers[2]).Triangles.ToArray();
+        uint[] triangles = ((FaceObjLineParser)_parsers[2]).VertexIndices.ToArray();
         return new UnfinishedObjData(vertices, albedoUVs, triangles);
+    }
+    
+    private void SortVertexData(UnfinishedObjData data)
+    {
+        int nextCombinedIndex = 0;
+        Dictionary<(int, int), int> indexMap = new Dictionary<(int, int), int>();
+        for (int i = 0; i < data.Triangles.Length; i++)
+        {   
+
+        }
     }
     
     private struct UnfinishedObjData
