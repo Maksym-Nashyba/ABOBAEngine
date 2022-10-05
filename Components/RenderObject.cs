@@ -25,8 +25,8 @@ public class RenderObject : SceneObject
         material.Use();
         
         GL.BindBuffer(BufferTarget.ArrayBuffer, verticesVBO);
-        GL.BufferData(BufferTarget.ArrayBuffer, model.Vertices.Length * sizeof(float), model.Vertices,
-            BufferUsageHint.StaticDraw);
+        GL.BufferData(BufferTarget.ArrayBuffer, model.Vertices.Length * sizeof(float), 
+            model.Vertices, BufferUsageHint.StaticDraw);
         GL.VertexAttribPointer(0, 3, VertexAttribPointerType.Float, false, 3 * sizeof(float), 0);
         GL.EnableVertexAttribArray(0);
         
@@ -35,8 +35,8 @@ public class RenderObject : SceneObject
             model.Triangles, BufferUsageHint.StaticDraw);
         
         GL.BindBuffer(BufferTarget.ArrayBuffer, albedoUVsVBO);
-        GL.BufferData(BufferTarget.ArrayBuffer, model.AlbedoMapUVs.Length * sizeof(float), model.AlbedoMapUVs,
-            BufferUsageHint.StaticDraw);
+        GL.BufferData(BufferTarget.ArrayBuffer, model.AlbedoMapUVs.Length * sizeof(float), 
+            model.AlbedoMapUVs, BufferUsageHint.StaticDraw);
         GL.VertexAttribPointer(1, 2, VertexAttribPointerType.Float, false, 2 * sizeof(float), 0);
         GL.EnableVertexAttribArray(1);
         

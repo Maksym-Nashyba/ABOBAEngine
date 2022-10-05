@@ -23,11 +23,20 @@ public sealed class ObjModelLoader : ModelLoader
 
     public override Model Load()
     {
+        UnfinishedObjData rawData = ReadRawData();
+        
+        return Model.FromMesh(
+                rawData.Vertices,
+                rawData.Triangles)
+            .WithAlbedoUVs(rawData.AlbedoUVs)
+            .Build();
+    }
+
+    private UnfinishedObjData ReadRawData()
+    {
         using LineByLineReader reader = new LineByLineReader(GetStream());
-        int n = 1;
         while (!reader.IsEmpty)
         {
-            n++;
             ReadOnlyMemory<char> line = reader.ReadLine();
             for (int i = 0; i < _parsers.Length; i++)
             {
@@ -38,11 +47,24 @@ public sealed class ObjModelLoader : ModelLoader
                 }
             }
         }
-        
-        return Model.FromMesh(
-                ((VertexObjLineParser)_parsers[0]).Vertices.ToArray(),
-                ((TriangleObjLineParser)_parsers[2]).Triangles.ToArray())
-            .WithAlbedoUVs(((AlbedoUVObjLineParser)_parsers[1]).AlbedoUVs.ToArray())
-            .Build();
+
+        float[] vertices = ((VertexObjLineParser)_parsers[0]).Vertices.ToArray();
+        float[] albedoUVs = ((AlbedoUVObjLineParser)_parsers[1]).AlbedoUVs.ToArray();
+        uint[] triangles = ((TriangleObjLineParser)_parsers[2]).Triangles.ToArray();
+        return new UnfinishedObjData(vertices, albedoUVs, triangles);
+    }
+    
+    private struct UnfinishedObjData
+    {
+        public float[] Vertices;
+        public float[] AlbedoUVs;
+        public uint[] Triangles;
+
+        public UnfinishedObjData(float[] vertices, float[] albedoUVs, uint[] triangles)
+        {
+            Vertices = vertices;
+            AlbedoUVs = albedoUVs;
+            Triangles = triangles;
+        }
     }
 }
