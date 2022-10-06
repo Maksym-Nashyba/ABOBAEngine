@@ -6,7 +6,8 @@ public sealed class ObjModelLoader : ModelLoader
 {
     private const string FileExtension = ".obj";
 
-    private ObjLineParser[] _parsers = {
+    private ObjLineParser[] _parsers =
+    {
         new VertexObjLineParser(),
         new AlbedoUVObjLineParser(),
         new FaceObjLineParser()
@@ -24,12 +25,12 @@ public sealed class ObjModelLoader : ModelLoader
     public override Model Load()
     {
         UnfinishedObjData rawData = ReadRawData();
-        
+
         SortVertexData(rawData);
-        
+
         return Model.FromMesh(
                 rawData.Vertices,
-                rawData.Triangles)
+                rawData.VertexIndices)
             .WithAlbedoUVs(rawData.AlbedoUVs)
             .Build();
     }
@@ -52,31 +53,46 @@ public sealed class ObjModelLoader : ModelLoader
 
         float[] vertices = ((VertexObjLineParser)_parsers[0]).Vertices.ToArray();
         float[] albedoUVs = ((AlbedoUVObjLineParser)_parsers[1]).AlbedoUVs.ToArray();
-        uint[] triangles = ((FaceObjLineParser)_parsers[2]).VertexIndices.ToArray();
-        return new UnfinishedObjData(vertices, albedoUVs, triangles);
+        uint[] vertexIndices = ((FaceObjLineParser)_parsers[2]).VertexIndices.ToArray();
+        uint[] normalIndices = ((FaceObjLineParser)_parsers[2]).NormalIndices.ToArray();
+        uint[] uvIndices = ((FaceObjLineParser)_parsers[2]).UVIndices.ToArray();
+        return new UnfinishedObjData(vertices, albedoUVs, vertexIndices, normalIndices, uvIndices);
     }
-    
+
     private void SortVertexData(UnfinishedObjData data)
     {
-        int nextCombinedIndex = 0;
-        Dictionary<(int, int), int> indexMap = new Dictionary<(int, int), int>();
-        for (int i = 0; i < data.Triangles.Length; i++)
-        {   
-
+        Dictionary<uint, (float, float)> indexToValue = new Dictionary<uint, (float, float)>();
+        List<float> uvs = new List<float>();
+        for (int i = 0; i < data.UVIndices.Length; i++)
+        {
+            uint index = data.UVIndices[i];
+            if (!indexToValue.ContainsKey(index))
+            {
+                uvs.Add(data.AlbedoUVs[2 * index]);
+                uvs.Add(data.AlbedoUVs[2 * index + 1]);
+                indexToValue.Add(index, (data.AlbedoUVs[2 * index], data.AlbedoUVs[2 * index + 1]));
+            }
         }
+
+        data.AlbedoUVs = uvs.ToArray();
     }
-    
-    private struct UnfinishedObjData
+
+    private class UnfinishedObjData
     {
         public float[] Vertices;
         public float[] AlbedoUVs;
-        public uint[] Triangles;
+        public uint[] VertexIndices;
+        public uint[] NormalIndices;
+        public uint[] UVIndices;
 
-        public UnfinishedObjData(float[] vertices, float[] albedoUVs, uint[] triangles)
+        public UnfinishedObjData(float[] vertices, float[] albedoUVs, uint[] triangles, uint[] normalIndices,
+            uint[] uvIndices)
         {
             Vertices = vertices;
             AlbedoUVs = albedoUVs;
-            Triangles = triangles;
+            VertexIndices = triangles;
+            NormalIndices = normalIndices;
+            UVIndices = uvIndices;
         }
     }
 }

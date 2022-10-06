@@ -13,6 +13,7 @@ public class ApplicationWindow : GameWindow
 {
     private Camera _camera;
     private RenderObject _renderObject;
+    private RenderObject _renderObject2;
     
     public ApplicationWindow(int width, int height, string title) 
         : base(GameWindowSettings.Default, NativeWindowSettings.Default)
@@ -38,10 +39,13 @@ public class ApplicationWindow : GameWindow
 
         ObjModelLoader modelLoader = new ObjModelLoader("perfection.obj");
         Model model =  modelLoader.Load();
+        ObjModelLoader modelLoader2 = new ObjModelLoader("cube.obj");
+        Model model2 =  modelLoader2.Load();
 
         Shader shader = new Shader("shader.vert", "shader.frag");
         Material material = new Material(shader);
         _renderObject = RenderObject.Instantiate(model, material);
+        _renderObject2 = RenderObject.Instantiate(model2, material);
         
         base.OnLoad();
     }
@@ -68,6 +72,7 @@ public class ApplicationWindow : GameWindow
         GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
 
         _renderObject.Render(_camera);
+        _renderObject2.Render(_camera);
         
         Context.SwapBuffers();
         base.OnRenderFrame(e);
