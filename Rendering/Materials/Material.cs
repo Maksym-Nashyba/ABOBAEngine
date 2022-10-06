@@ -10,7 +10,7 @@ public class Material
     public Material(Shader shader)
     {
         Shader = shader;
-        _texture = new Texture("perfection.png");
+        _texture = new Texture("van.png");
     }
 
     public virtual void Use()

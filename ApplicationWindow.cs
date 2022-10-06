@@ -33,21 +33,21 @@ public class ApplicationWindow : GameWindow
         };
 
         GL.Enable(EnableCap.DepthTest);
-        GL.Enable(EnableCap.CullFace);
-        GL.CullFace(CullFaceMode.Back);
+        GL.Enable(EnableCap.Blend);
+        GL.BlendFunc(BlendingFactor.SrcAlpha, BlendingFactor.OneMinusSrcAlpha);
+        // GL.Enable(EnableCap.CullFace);
+        // GL.CullFace(CullFaceMode.Back);
         GL.ClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 
-        ObjModelLoader modelLoader = new ObjModelLoader("cube.obj");
+        ObjModelLoader modelLoader = new ObjModelLoader("SkinPreview.obj");
         Model model =  modelLoader.Load();
-        ObjModelLoader modelLoader2 = new ObjModelLoader("cube.obj");
-        Model model2 =  modelLoader2.Load();
 
         Shader shader = new Shader("shader.vert", "shader.frag");
         Material material = new Material(shader);
         _renderObject = RenderObject.Instantiate(model, material);
         _renderObject.Transform.Position = new Vector3(0f, -1f, 0f);
-        _renderObject2 = RenderObject.Instantiate(model2, material);
-        
+        _renderObject.Transform.Rotation = Quaternion.FromEulerAngles(0f, MathHelper.DegreesToRadians(125f), 0f);
+
         base.OnLoad();
     }
 
@@ -73,8 +73,7 @@ public class ApplicationWindow : GameWindow
         GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
 
         _renderObject.Render(_camera);
-        //_renderObject2.Render(_camera);
-        
+
         Context.SwapBuffers();
         base.OnRenderFrame(e);
     }

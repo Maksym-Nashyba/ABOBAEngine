@@ -50,7 +50,7 @@ public class RenderObject : SceneObject
         GL.BindVertexArray(_vertexArrayObject);
         _material.Use();
 
-        Matrix4 model = Matrix4.CreateTranslation(Transform.Position);
+        Matrix4 model = Matrix4.CreateFromQuaternion(Transform.Rotation) * Matrix4.CreateTranslation(Transform.Position);
         Matrix4 view = camera.GetViewMatrix();
         Matrix4 projection =
             Matrix4.CreatePerspectiveFieldOfView(MathHelper.DegreesToRadians(45.0f), 800f / 600f, 0.1f, 100.0f);

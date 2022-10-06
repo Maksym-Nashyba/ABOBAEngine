@@ -27,12 +27,15 @@
       <Content Include="bin\Debug\net6.0\cube.obj" />
       <Content Include="bin\Debug\net6.0\metal_cock.mtl" />
       <Content Include="bin\Debug\net6.0\metal_cock.obj" />
+      <Content Include="bin\Debug\net6.0\minon.png" />
       <Content Include="bin\Debug\net6.0\perfection.obj" />
       <Content Include="bin\Debug\net6.0\perfection.png" />
       <Content Include="bin\Debug\net6.0\shader.frag" />
       <Content Include="bin\Debug\net6.0\shader.vert" />
+      <Content Include="bin\Debug\net6.0\SkinPreview.obj" />
       <Content Include="bin\Debug\net6.0\titanium_ore.mtl" />
       <Content Include="bin\Debug\net6.0\titanium_ore.obj" />
+      <Content Include="bin\Debug\net6.0\van.png" />
     </ItemGroup>
 
 </Project>
