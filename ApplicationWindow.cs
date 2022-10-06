@@ -37,7 +37,7 @@ public class ApplicationWindow : GameWindow
         GL.CullFace(CullFaceMode.Back);
         GL.ClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 
-        ObjModelLoader modelLoader = new ObjModelLoader("perfection.obj");
+        ObjModelLoader modelLoader = new ObjModelLoader("cube.obj");
         Model model =  modelLoader.Load();
         ObjModelLoader modelLoader2 = new ObjModelLoader("cube.obj");
         Model model2 =  modelLoader2.Load();
@@ -45,6 +45,7 @@ public class ApplicationWindow : GameWindow
         Shader shader = new Shader("shader.vert", "shader.frag");
         Material material = new Material(shader);
         _renderObject = RenderObject.Instantiate(model, material);
+        _renderObject.Transform.Position = new Vector3(0f, -1f, 0f);
         _renderObject2 = RenderObject.Instantiate(model2, material);
         
         base.OnLoad();
@@ -72,7 +73,7 @@ public class ApplicationWindow : GameWindow
         GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
 
         _renderObject.Render(_camera);
-        _renderObject2.Render(_camera);
+        //_renderObject2.Render(_camera);
         
         Context.SwapBuffers();
         base.OnRenderFrame(e);

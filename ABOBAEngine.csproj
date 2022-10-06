@@ -21,6 +21,7 @@
     </ItemGroup>
 
     <ItemGroup>
+      <Content Include="bin\Debug\net6.0\aniki.png" />
       <Content Include="bin\Debug\net6.0\copper_block.png" />
       <Content Include="bin\Debug\net6.0\copper_ore.png" />
       <Content Include="bin\Debug\net6.0\cube.obj" />

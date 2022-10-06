@@ -61,19 +61,21 @@ public sealed class ObjModelLoader : ModelLoader
 
     private void SortVertexData(UnfinishedObjData data)
     {
-        Dictionary<uint, (float, float)> indexToValue = new Dictionary<uint, (float, float)>();
         List<float> uvs = new List<float>();
-        for (int i = 0; i < data.UVIndices.Length; i++)
+        List<float> vertices = new List<float>();
+        for (int i = 0; i < data.VertexIndices.Length; i++)
         {
-            uint index = data.UVIndices[i];
-            if (!indexToValue.ContainsKey(index))
-            {
-                uvs.Add(data.AlbedoUVs[2 * index]);
-                uvs.Add(data.AlbedoUVs[2 * index + 1]);
-                indexToValue.Add(index, (data.AlbedoUVs[2 * index], data.AlbedoUVs[2 * index + 1]));
-            }
+            uint uvIndex = data.UVIndices[i];
+            uvs.Add(data.AlbedoUVs[2 * uvIndex]);
+            uvs.Add(data.AlbedoUVs[2 * uvIndex + 1]);
+
+            uint vertexIndex = data.VertexIndices[i];
+            vertices.Add(data.Vertices[3*vertexIndex]);
+            vertices.Add(data.Vertices[3*vertexIndex+1]);
+            vertices.Add(data.Vertices[3*vertexIndex+2]);
         }
 
+        data.Vertices = vertices.ToArray();
         data.AlbedoUVs = uvs.ToArray();
     }
 
