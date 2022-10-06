@@ -73,12 +73,12 @@ public sealed class FaceObjLineParser : ObjLineParser
             position = 0;
             
             while (span[position] != '/') position++;
-            NormalIndices.Add(uint.Parse(span.Slice(0, position)) - 1);
+            UVIndices.Add(uint.Parse(span.Slice(0, position)) - 1);
             span = span.Slice(++position);
             position = 0;
 
             while (position < span.Length && span[position] != ' ') position++;
-            UVIndices.Add(uint.Parse(span.Slice(0, position)) - 1);
+            NormalIndices.Add(uint.Parse(span.Slice(0, position)) - 1);
             if(position <= span.Length)span = span.Slice(position);
             position = 0;
         }
