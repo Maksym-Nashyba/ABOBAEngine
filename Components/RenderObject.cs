@@ -11,14 +11,12 @@ public class RenderObject : SceneObject
     private Material _material;
 
     private int _vertexArrayObject;     //this models space in V-RAM
-    private int _elementBufferObject;   //order of vertices in mesh
     private int _verticesVBO;           //VertexBufferObject - array of vertices
     private int _albedoUVsVBO;          //array of texture UVs
 
     public static RenderObject Instantiate(Model model, Material material)
     {
         int vertexArrayObject = GL.GenVertexArray();
-        int elementBufferObject = GL.GenBuffer();
         int verticesVBO = GL.GenBuffer();
         int albedoUVsVBO = GL.GenBuffer();
         GL.BindVertexArray(vertexArrayObject);
@@ -29,11 +27,7 @@ public class RenderObject : SceneObject
             model.Vertices, BufferUsageHint.StaticDraw);
         GL.VertexAttribPointer(0, 3, VertexAttribPointerType.Float, false, 3 * sizeof(float), 0);
         GL.EnableVertexAttribArray(0);
-        
-        GL.BindBuffer(BufferTarget.ElementArrayBuffer, elementBufferObject);
-        GL.BufferData(BufferTarget.ElementArrayBuffer, model.Triangles.Length * sizeof(uint), 
-            model.Triangles, BufferUsageHint.StaticDraw);
-        
+
         GL.BindBuffer(BufferTarget.ArrayBuffer, albedoUVsVBO);
         GL.BufferData(BufferTarget.ArrayBuffer, model.AlbedoMapUVs.Length * sizeof(float), 
             model.AlbedoMapUVs, BufferUsageHint.StaticDraw);
@@ -44,7 +38,6 @@ public class RenderObject : SceneObject
         return new RenderObject
         {
             _vertexArrayObject = vertexArrayObject,
-            _elementBufferObject = elementBufferObject,
             _albedoUVsVBO = albedoUVsVBO,
             _verticesVBO = verticesVBO,
             _material = material,
@@ -57,7 +50,7 @@ public class RenderObject : SceneObject
         GL.BindVertexArray(_vertexArrayObject);
         _material.Use();
 
-        Matrix4 model = Matrix4.Identity;
+        Matrix4 model = Matrix4.CreateTranslation(Transform.Position);
         Matrix4 view = camera.GetViewMatrix();
         Matrix4 projection =
             Matrix4.CreatePerspectiveFieldOfView(MathHelper.DegreesToRadians(45.0f), 800f / 600f, 0.1f, 100.0f);
@@ -65,14 +58,13 @@ public class RenderObject : SceneObject
         Matrix4 transform = model * view * projection;
         _material.Shader.SetUniformMatrix4("transform", ref transform);
         
-        GL.DrawElements(PrimitiveType.Triangles, _model.Triangles.Length, DrawElementsType.UnsignedInt, 0);
+        GL.DrawArrays(PrimitiveType.Triangles, 0, _model.Vertices.Length/3);
     }
 
     public void DisposeOf()
     {
         GL.DeleteBuffer(_verticesVBO);
         GL.DeleteBuffer(_albedoUVsVBO);
-        GL.DeleteBuffer(_elementBufferObject);
         _material.Shader.Dispose();
     }
 }
